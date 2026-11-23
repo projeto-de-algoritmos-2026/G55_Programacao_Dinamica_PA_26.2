@@ -1,0 +1,33 @@
+{
+  "tempo_disponivel": 10,
+  "atividades": [
+    {
+      "id": "a1",
+      "nome": "Revisar mapa mental de Grafos",
+      "disciplina": "Projeto de Algoritmos",
+      "duracao": 6,
+      "prioridade": 7
+    },
+    {
+      "id": "a2",
+      "nome": "Resolver 1 exercício de PD",
+      "disciplina": "Projeto de Algoritmos",
+      "duracao": 5,
+      "prioridade": 5
+    },
+    {
+      "id": "a3",
+      "nome": "Resolver 1 exercício de integral",
+      "disciplina": "Cálculo 2",
+      "duracao": 5,
+      "prioridade": 5
+    },
+    {
+      "id": "a4",
+      "nome": "Revisar 10 flashcards",
+      "disciplina": "Inglês",
+      "duracao": 2,
+      "prioridade": 1
+    }
+  ]
+}

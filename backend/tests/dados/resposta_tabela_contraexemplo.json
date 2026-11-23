@@ -1,0 +1,115 @@
+{
+  "capacidade": 10,
+  "ordem_atividades": [
+    "a1",
+    "a2",
+    "a3",
+    "a4"
+  ],
+  "tabela": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      7,
+      7,
+      7,
+      7,
+      10
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      5,
+      7,
+      7,
+      8,
+      8,
+      10
+    ]
+  ],
+  "passos": [
+    {
+      "i": 4,
+      "atividade_id": "a4",
+      "t": 10,
+      "valor_sem": 10,
+      "valor_com": 8,
+      "decisao": "descartar"
+    },
+    {
+      "i": 3,
+      "atividade_id": "a3",
+      "t": 10,
+      "valor_sem": 7,
+      "valor_com": 10,
+      "decisao": "incluir"
+    },
+    {
+      "i": 2,
+      "atividade_id": "a2",
+      "t": 5,
+      "valor_sem": 0,
+      "valor_com": 5,
+      "decisao": "incluir"
+    },
+    {
+      "i": 1,
+      "atividade_id": "a1",
+      "t": 0,
+      "valor_sem": 0,
+      "valor_com": null,
+      "decisao": "descartar"
+    }
+  ],
+  "selecionadas": [
+    "a2",
+    "a3"
+  ],
+  "prioridade_total": 10
+}

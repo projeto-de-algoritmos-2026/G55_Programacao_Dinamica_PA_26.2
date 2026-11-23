@@ -1,0 +1,44 @@
+{
+  "tempo_disponivel": 10,
+  "pd": {
+    "estrategia": "programacao_dinamica",
+    "otimo_garantido": true,
+    "selecionadas": [
+      "a2",
+      "a3"
+    ],
+    "descartadas": [
+      "a1",
+      "a4"
+    ],
+    "prioridade_total": 10,
+    "tempo_usado": 10,
+    "tempo_restante": 0
+  },
+  "guloso": {
+    "estrategia": "guloso_prioridade_por_duracao",
+    "otimo_garantido": false,
+    "selecionadas": [
+      "a1",
+      "a4"
+    ],
+    "descartadas": [
+      "a2",
+      "a3"
+    ],
+    "prioridade_total": 8,
+    "tempo_usado": 8,
+    "tempo_restante": 2,
+    "ordem_considerada": [
+      "a1",
+      "a2",
+      "a3",
+      "a4"
+    ]
+  },
+  "comparacao": {
+    "diferenca_prioridade": 2,
+    "guloso_atingiu_otimo": false
+  },
+  "tabela_disponivel": true
+}
