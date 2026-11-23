@@ -99,7 +99,38 @@ G55_Programacao_Dinamica_PA_26.2/
 
 ## Instalação e Execução
 
-Pendente. As instruções serão adicionadas quando o backend e o frontend estiverem rodando.
+Pré-requisitos: [uv](https://docs.astral.sh/uv/), que instala o Python 3.12 automaticamente, e Node.js 20.19 ou superior (o arquivo `frontend/.nvmrc` indica a versão 22 para quem usa nvm).
+
+**Backend**, em um terminal:
+
+```bash
+cd backend
+uv sync
+uv run uvicorn app.main:app --reload --port 8000
+```
+
+**Frontend**, em outro terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+| Endereço | Conteúdo |
+|---|---|
+| `http://localhost:5173` | Interface do EstudaPlan |
+| `http://localhost:8000/docs` | Documentação interativa da API |
+
+Em desenvolvimento, as chamadas do frontend para `/api` são encaminhadas ao backend pelo proxy do Vite.
+
+**Testes**, a partir de `backend/`:
+
+```bash
+uv run pytest
+```
+
+A execução com Docker será adicionada em uma fase posterior.
 
 ---
 
