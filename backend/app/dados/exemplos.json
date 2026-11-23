@@ -1,0 +1,40 @@
+[
+  {
+    "id": "contraexemplo-guloso",
+    "nome": "Contraexemplo do guloso",
+    "descricao": "Durações curtas para ver a tabela. O guloso fica com 8 pontos e a PD com 10.",
+    "tempo_disponivel": 10,
+    "atividades": [
+      { "id": "a1", "nome": "Revisar mapa mental de Grafos", "disciplina": "Projeto de Algoritmos", "duracao": 6, "prioridade": 7 },
+      { "id": "a2", "nome": "Resolver 1 exercício de PD", "disciplina": "Projeto de Algoritmos", "duracao": 5, "prioridade": 5 },
+      { "id": "a3", "nome": "Resolver 1 exercício de integral", "disciplina": "Cálculo 2", "duracao": 5, "prioridade": 5 },
+      { "id": "a4", "nome": "Revisar 10 flashcards", "disciplina": "Inglês", "duracao": 2, "prioridade": 1 }
+    ]
+  },
+  {
+    "id": "empate",
+    "nome": "Empate entre atividades",
+    "descricao": "Duas atividades com a mesma duração e prioridade, e tempo para só uma. No empate, a PD fica com a que aparece primeiro na lista.",
+    "tempo_disponivel": 5,
+    "atividades": [
+      { "id": "e1", "nome": "Ler resumo de Grafos", "disciplina": "Projeto de Algoritmos", "duracao": 5, "prioridade": 5 },
+      { "id": "e2", "nome": "Ler resumo de Programação Dinâmica", "disciplina": "Projeto de Algoritmos", "duracao": 5, "prioridade": 5 }
+    ]
+  },
+  {
+    "id": "tarde-de-estudos",
+    "nome": "Tarde de estudos",
+    "descricao": "Três horas livres e oito atividades que somam mais de cinco horas. Grande demais para a tabela didática.",
+    "tempo_disponivel": 180,
+    "atividades": [
+      { "id": "t1", "nome": "Revisar slides de Programação Dinâmica", "disciplina": "Projeto de Algoritmos", "duracao": 45, "prioridade": 9 },
+      { "id": "t2", "nome": "Lista de exercícios de Mochila 0/1", "disciplina": "Projeto de Algoritmos", "duracao": 60, "prioridade": 10 },
+      { "id": "t3", "nome": "Resolver 5 integrais por partes", "disciplina": "Cálculo 2", "duracao": 50, "prioridade": 7 },
+      { "id": "t4", "nome": "Ler capítulo sobre séries", "disciplina": "Cálculo 2", "duracao": 40, "prioridade": 5 },
+      { "id": "t5", "nome": "Praticar listening", "disciplina": "Inglês", "duracao": 20, "prioridade": 3 },
+      { "id": "t6", "nome": "Revisar vocabulário", "disciplina": "Inglês", "duracao": 15, "prioridade": 2 },
+      { "id": "t7", "nome": "Escrever relatório de laboratório", "disciplina": "Física Experimental", "duracao": 55, "prioridade": 8 },
+      { "id": "t8", "nome": "Assistir videoaula de circuitos", "disciplina": "Física Experimental", "duracao": 30, "prioridade": 4 }
+    ]
+  }
+]
