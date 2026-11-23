@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+
+# Ambiente
+.env
+.env.*
+!.env.example
+
+# Documentos internos de planejamento (não vão para o repositório)
+ROTEIRO_IMPLEMENTACAO.md
+CLAUDE.md
+.claude/
+
+# Sistema e editores
+.DS_Store
+.idea/
+.vscode/
