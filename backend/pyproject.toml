@@ -19,3 +19,8 @@ dev = [
 testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "-ra"
+# O Starlette recomenda o pacote httpx2 no TestClient. Mantemos o httpx, que
+# funciona normalmente, e silenciamos só este aviso de depreciação.
+filterwarnings = [
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated:starlette.exceptions.StarletteDeprecationWarning",
+]
