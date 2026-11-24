@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { N_TABELA, T_TABELA } from '../limites'
 import type { Atividade, PassoReconstrucao, RespostaTabela } from '../types'
@@ -28,6 +28,18 @@ export function TabelaPD({ dados, atividades }: Props) {
   const { tabela, passos, capacidade, ordem_atividades } = dados
   const [atual, setAtual] = useState(0)
 
+  // ← e → percorrem os passos, exceto quando o foco está num campo de texto.
+  useEffect(() => {
+    function tecla(evento: KeyboardEvent) {
+      const alvo = evento.target as HTMLElement
+      if (alvo.closest('input, textarea, select, dialog[open]')) return
+      if (evento.key === 'ArrowRight') setAtual((k) => Math.min(k + 1, passos.length - 1))
+      if (evento.key === 'ArrowLeft') setAtual((k) => Math.max(k - 1, 0))
+    }
+    window.addEventListener('keydown', tecla)
+    return () => window.removeEventListener('keydown', tecla)
+  }, [passos.length])
+
   const linhas = ordem_atividades.map((id) => atividades.get(id))
   const duracoes = linhas.map((a) => a?.duracao ?? 0)
   const prioridades = linhas.map((a) => a?.prioridade ?? 0)
@@ -41,35 +53,38 @@ export function TabelaPD({ dados, atividades }: Props) {
 
   function classe(i: number, t: number): string {
     const k = chave(i, t)
-    if (k === celulaAtual) return 'bg-yellow-200 font-bold ring-2 ring-yellow-500 ring-inset'
-    if (k === celulaSem) return 'bg-sky-200 font-semibold ring-2 ring-sky-500 ring-inset'
-    if (k === celulaCom) return 'bg-emerald-200 font-semibold ring-2 ring-emerald-500 ring-inset'
-    if (noCaminho.has(k)) return 'bg-violet-100 font-semibold text-violet-900'
-    return tabela[i][t] === 0 ? 'text-slate-300' : 'text-slate-700'
+    if (k === celulaAtual) return 'animate-pulso bg-girassol font-extrabold text-breu rounded-md'
+    if (k === celulaSem) return 'bg-lavanda/30 font-bold text-giz rounded-md ring-2 ring-inset ring-lavanda'
+    if (k === celulaCom) return 'bg-menta/30 font-bold text-giz rounded-md ring-2 ring-inset ring-menta'
+    if (noCaminho.has(k)) return 'bg-giz/15 font-bold text-giz rounded-md'
+    return tabela[i][t] === 0 ? 'text-giz/25' : 'text-giz/80'
   }
 
   const colunas = Array.from({ length: capacidade + 1 }, (_, t) => t)
 
   return (
-    <section aria-label="Tabela da programação dinâmica" className="space-y-4">
-      <p className="text-sm text-slate-600">
-        <code className="rounded bg-slate-100 px-1">OPT[i][t]</code> é a maior soma de prioridades usando só as
-        atividades 1..i em até t minutos. Resposta:{' '}
-        <code className="rounded bg-slate-100 px-1">
-          OPT[{ordem_atividades.length}][{capacidade}] = {dados.prioridade_total}
-        </code>
-        .
-      </p>
+    <section aria-label="Tabela da programação dinâmica" className="space-y-5">
+      <div className="max-w-prose space-y-2">
+        <h3 className="font-display text-2xl font-extrabold">Como a programação dinâmica decidiu</h3>
+        <p className="text-tinta-suave">
+          Cada célula <strong>OPT[i][t]</strong> guarda a maior soma de prioridades usando só as atividades 1 a i
+          em até t minutos. A tabela é preenchida linha por linha; a resposta fica no canto,{' '}
+          <strong>
+            OPT[{ordem_atividades.length}][{capacidade}] = {dados.prioridade_total}
+          </strong>
+          . Depois, a reconstrução sobe da última linha até a primeira para descobrir quais atividades entraram.
+        </p>
+      </div>
 
-      <div className="overflow-x-auto rounded-md border border-slate-200 bg-white">
-        <table className="border-collapse text-xs tabular-nums">
+      <div className="overflow-x-auto rounded-3xl bg-lousa p-3 sm:p-4">
+        <table className="border-separate border-spacing-0.5 text-sm tabular-nums">
           <thead>
-            <tr className="bg-slate-50">
-              <th className="sticky left-0 z-10 bg-slate-50 px-2 py-1 text-left font-medium text-slate-500">
-                i \ t
+            <tr>
+              <th className="sticky left-0 z-10 bg-lousa px-2 py-1 text-left text-xs font-normal text-giz/60">
+                atividade \ minutos
               </th>
               {colunas.map((t) => (
-                <th key={t} className="min-w-7 px-1 py-1 text-center font-medium text-slate-500">
+                <th key={t} className="min-w-8 px-1 py-1 text-center text-xs font-normal text-giz/60">
                   {t}
                 </th>
               ))}
@@ -78,26 +93,29 @@ export function TabelaPD({ dados, atividades }: Props) {
           <tbody>
             {tabela.map((linha, i) => {
               const a = i === 0 ? undefined : linhas[i - 1]
+              const ativa = passo?.i === i
               return (
-                <tr key={i} className="border-t border-slate-100">
+                <tr key={i}>
                   <th
                     scope="row"
-                    className="sticky left-0 z-10 max-w-56 bg-white px-2 py-1 text-left font-normal whitespace-nowrap"
+                    className={`sticky left-0 z-10 max-w-56 bg-lousa px-2 py-1.5 text-left font-normal whitespace-nowrap ${
+                      ativa ? 'text-girassol' : 'text-giz/85'
+                    }`}
                   >
-                    <span className="mr-1 font-semibold text-slate-700">{i}</span>
+                    <span className="mr-1.5 font-display font-extrabold">{i}</span>
                     {i === 0 ? (
-                      <span className="text-slate-400">nenhuma</span>
+                      <span className="text-giz/50">nenhuma</span>
                     ) : (
-                      <span className="text-slate-600" title={a?.nome}>
+                      <span title={a?.nome}>
                         <span className="inline-block max-w-36 truncate align-bottom">{a?.nome}</span>{' '}
-                        <span className="text-slate-400">
-                          (d={duracoes[i - 1]}, p={prioridades[i - 1]})
+                        <span className="text-xs text-giz/55">
+                          {duracoes[i - 1]} min, p {prioridades[i - 1]}
                         </span>
                       </span>
                     )}
                   </th>
                   {linha.map((valor, t) => (
-                    <td key={t} className={`px-1 py-1 text-center ${classe(i, t)}`}>
+                    <td key={t} className={`px-1 py-1.5 text-center ${classe(i, t)}`}>
                       {valor}
                     </td>
                   ))}
@@ -108,33 +126,51 @@ export function TabelaPD({ dados, atividades }: Props) {
         </table>
       </div>
 
-      <Legenda />
+      <ul className="flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-tinta-suave">
+        <Legenda cor="bg-girassol" texto="posição atual da reconstrução" />
+        <Legenda cor="bg-lavanda" texto="sem a atividade: OPT[i-1][t]" />
+        <Legenda cor="bg-menta" texto="com a atividade: OPT[i-1][t-d]" />
+        <Legenda cor="bg-giz/30" texto="caminho percorrido" />
+      </ul>
 
       {passo ? (
-        <div className="space-y-3 rounded-md border border-slate-200 bg-white p-3">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="font-semibold text-slate-800">
-              Reconstrução · passo {atual + 1} de {passos.length}
-            </h3>
+        <div className="space-y-4 rounded-3xl border-2 border-lousa-linha bg-superficie p-4 sm:p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="font-display text-xl font-extrabold">
+              Passo {atual + 1} de {passos.length}
+            </p>
             <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setAtual((k) => k - 1)}
-                disabled={atual === 0}
-                className="rounded-md border border-slate-300 px-3 py-1 text-sm hover:bg-slate-100 disabled:opacity-40"
-              >
+              <BotaoPasso onClick={() => setAtual((k) => k - 1)} disabled={atual === 0}>
                 Anterior
-              </button>
-              <button
-                type="button"
-                onClick={() => setAtual((k) => k + 1)}
-                disabled={atual === passos.length - 1}
-                className="rounded-md border border-slate-300 px-3 py-1 text-sm hover:bg-slate-100 disabled:opacity-40"
-              >
+              </BotaoPasso>
+              <BotaoPasso onClick={() => setAtual((k) => k + 1)} disabled={atual === passos.length - 1}>
                 Próximo
-              </button>
+              </BotaoPasso>
             </div>
           </div>
+
+          <ol className="flex gap-1.5" aria-label="Passos da reconstrução">
+            {passos.map((p, k) => (
+              <li key={p.i} className="flex-1">
+                <button
+                  type="button"
+                  onClick={() => setAtual(k)}
+                  aria-current={k === atual ? 'step' : undefined}
+                  aria-label={`Passo ${k + 1}: ${p.decisao === 'incluir' ? 'inclui' : 'descarta'} a atividade ${p.i}`}
+                  className={`h-2.5 w-full rounded-full ${
+                    k === atual
+                      ? 'bg-girassol'
+                      : k < atual
+                        ? p.decisao === 'incluir'
+                          ? 'bg-menta'
+                          : 'bg-tinta-suave/40'
+                        : 'bg-papel-funda'
+                  }`}
+                />
+              </li>
+            ))}
+          </ol>
+
           <DescricaoPasso
             passo={passo}
             nome={linhas[passo.i - 1]?.nome ?? passo.atividade_id}
@@ -142,24 +178,10 @@ export function TabelaPD({ dados, atividades }: Props) {
             p={prioridades[passo.i - 1]}
             valorAtual={tabela[passo.i][passo.t]}
           />
-          <ol className="flex flex-wrap gap-1.5 text-xs">
-            {passos.map((p, k) => (
-              <li key={p.i}>
-                <button
-                  type="button"
-                  onClick={() => setAtual(k)}
-                  className={`rounded border px-2 py-0.5 ${
-                    k === atual ? 'border-slate-800 bg-slate-800 text-white' : 'border-slate-300 hover:bg-slate-100'
-                  }`}
-                >
-                  i={p.i}: {p.decisao === 'incluir' ? 'inclui' : 'descarta'}
-                </button>
-              </li>
-            ))}
-          </ol>
+          <p className="text-xs text-tinta-suave">Dica: use as setas ← e → do teclado.</p>
         </div>
       ) : (
-        <p className="text-sm text-slate-500">Sem atividades, não há passos de reconstrução.</p>
+        <p className="text-tinta-suave">Sem atividades, não há passos de reconstrução.</p>
       )}
     </section>
   )
@@ -182,49 +204,53 @@ function DescricaoPasso({
   const incluir = decisao === 'incluir'
 
   return (
-    <div className="space-y-1.5 text-sm">
+    <div className="space-y-3">
       <p>
-        Posição <code className="rounded bg-yellow-100 px-1">({i}, {t})</code>: atividade {i},{' '}
-        <strong>{nome}</strong> (d = {d}, p = {p}), com {t} min disponíveis.
+        Na linha {i}, com {t} min: <strong>{nome}</strong> ({d} min, prioridade {p}).
       </p>
-      <ul className="space-y-0.5 pl-4 text-slate-700">
-        <li>
-          <span className="rounded bg-sky-100 px-1">Sem</span> a atividade:{' '}
-          <code>OPT[{i - 1}][{t}] = {valor_sem}</code>
-        </li>
-        <li>
-          <span className="rounded bg-emerald-100 px-1">Com</span> a atividade:{' '}
-          {valor_com === null ? (
-            <span>
-              não cabe ({d} &gt; {t})
-            </span>
-          ) : (
-            <code>
-              {p} + OPT[{i - 1}][{t - d}] = {valor_com}
-            </code>
-          )}
-        </li>
-      </ul>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div className="rounded-2xl border-2 border-lavanda bg-lavanda/15 px-3 py-2">
+          <p className="text-sm text-tinta-suave">Sem ela</p>
+          <p className="font-bold tabular-nums">
+            OPT[{i - 1}][{t}] = {valor_sem}
+          </p>
+        </div>
+        <div className="rounded-2xl border-2 border-menta bg-menta/15 px-3 py-2">
+          <p className="text-sm text-tinta-suave">Com ela</p>
+          <p className="font-bold tabular-nums">
+            {valor_com === null ? (
+              <>
+                não cabe ({d} min &gt; {t} min)
+              </>
+            ) : (
+              <>
+                {p} + OPT[{i - 1}][{t - d}] = {valor_com}
+              </>
+            )}
+          </p>
+        </div>
+      </div>
       <p
-        className={`rounded-md px-3 py-2 font-medium ${
-          incluir ? 'bg-emerald-50 text-emerald-900' : 'bg-slate-100 text-slate-700'
+        key={`${i}-${t}`}
+        className={`animate-surgir rounded-2xl px-4 py-3 font-bold ${
+          incluir ? 'bg-menta text-giz' : 'bg-papel text-tinta'
         }`}
       >
         {incluir && (
           <>
-            OPT[{i}][{t}] = {valorAtual} ≠ OPT[{i - 1}][{t}] = {valor_sem} → <strong>inclui</strong> {nome}; t passa a{' '}
-            {t - d}.
+            OPT[{i}][{t}] = {valorAtual} é diferente de OPT[{i - 1}][{t}] = {valor_sem}, então {nome} entra. Sobram{' '}
+            {t - d} min.
           </>
         )}
         {!incluir && valor_com === null && (
           <>
-            Não cabe ({d} &gt; {t}) → <strong>descarta</strong> {nome}; t continua {t}.
+            {nome} não cabe em {t} min, então fica de fora. Continuam {t} min.
           </>
         )}
         {!incluir && valor_com !== null && (
           <>
-            OPT[{i}][{t}] = {valorAtual} = OPT[{i - 1}][{t}] → <strong>descarta</strong> {nome}; t continua {t}.
-            {valor_com === valor_sem && ' (Empate: a regra fica com as atividades que aparecem antes na lista.)'}
+            OPT[{i}][{t}] = {valorAtual} é igual a OPT[{i - 1}][{t}], então {nome} fica de fora. Continuam {t} min.
+            {valor_com === valor_sem && ' Houve empate; a regra fica com as atividades que aparecem antes na lista.'}
           </>
         )}
       </p>
@@ -232,21 +258,24 @@ function DescricaoPasso({
   )
 }
 
-function Legenda() {
-  const itens = [
-    ['bg-yellow-200 ring-2 ring-yellow-500', 'célula do passo atual'],
-    ['bg-sky-200 ring-2 ring-sky-500', 'sem a atividade: OPT[i-1][t]'],
-    ['bg-emerald-200 ring-2 ring-emerald-500', 'com a atividade: OPT[i-1][t-d]'],
-    ['bg-violet-100', 'caminho da reconstrução'],
-  ]
+function BotaoPasso({ onClick, disabled, children }: { onClick: () => void; disabled: boolean; children: string }) {
   return (
-    <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
-      {itens.map(([cor, texto]) => (
-        <li key={texto} className="flex items-center gap-1.5">
-          <span className={`inline-block h-3 w-3 rounded-sm ring-inset ${cor}`} />
-          {texto}
-        </li>
-      ))}
-    </ul>
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="rounded-xl bg-lousa-clara px-4 py-2 font-bold text-giz shadow-[0_4px_0_#0a0b26] active:translate-y-1 active:shadow-none disabled:bg-papel-funda disabled:text-tinta-suave disabled:shadow-none"
+    >
+      {children}
+    </button>
+  )
+}
+
+function Legenda({ cor, texto }: { cor: string; texto: string }) {
+  return (
+    <li className="flex items-center gap-2">
+      <span className={`inline-block h-3.5 w-3.5 rounded ${cor}`} />
+      {texto}
+    </li>
   )
 }
