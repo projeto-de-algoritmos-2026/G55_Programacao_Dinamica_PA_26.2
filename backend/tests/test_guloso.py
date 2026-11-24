@@ -4,6 +4,7 @@ import pytest
 
 from app.algoritmos.guloso import guloso
 from app.algoritmos.mochila_pd import mochila_pd
+from tests.auxiliares import instancias_aleatorias
 
 
 @pytest.fixture
@@ -78,3 +79,16 @@ def test_nada_selecionado(duracoes, prioridades, capacidade):
 def test_determinismo(contraexemplo):
     _, duracoes, prioridades, capacidade = contraexemplo
     assert guloso(duracoes, prioridades, capacidade) == guloso(duracoes, prioridades, capacidade)
+
+
+def test_aleatorias_guloso_sempre_viavel():
+    """Caso 10: nas 500 instâncias do caso 9 o guloso respeita T, não repete e não supera a PD."""
+    for numero, (duracoes, prioridades, capacidade) in enumerate(instancias_aleatorias()):
+        contexto = f"instância {numero}: d={duracoes} p={prioridades} T={capacidade}"
+        solucao = guloso(duracoes, prioridades, capacidade)
+        assert solucao.indices == sorted(set(solucao.indices)), contexto
+        assert all(0 <= k < len(duracoes) for k in solucao.indices), contexto
+        assert solucao.tempo_usado == sum(duracoes[k] for k in solucao.indices) <= capacidade, contexto
+        assert solucao.prioridade_total == sum(prioridades[k] for k in solucao.indices), contexto
+        assert solucao.prioridade_total <= mochila_pd(duracoes, prioridades, capacidade).prioridade_total, contexto
+        assert sorted(solucao.ordem_considerada) == list(range(len(duracoes))), contexto
