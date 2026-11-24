@@ -1,1 +1,165 @@
+@import '@fontsource-variable/bricolage-grotesque/standard.css';
+@import '@fontsource/atkinson-hyperlegible/400.css';
+@import '@fontsource/atkinson-hyperlegible/700.css';
 @import 'tailwindcss';
+
+/* Tokens do EstudaPlan. Lousa = tabuleiro; Papel = mesa; Girassol = recompensa;
+   Menta = ótimo/incluir; Tomate = guloso/sobra; Lavanda = caminho da PD. */
+@theme {
+  /* Tema escuro: a página é a noite; a Lousa é um índigo mais aceso que se destaca dela. */
+  --color-lousa: #26287a;
+  --color-lousa-clara: #31349a;
+  --color-lousa-linha: #4c4fc0;
+  --color-papel: #111233;
+  --color-papel-funda: #2a2c63;
+  --color-superficie: #1b1c4a;
+  --color-giz: #ffffff;
+  --color-tinta: #eceeff;
+  --color-tinta-suave: #a4a8dd;
+  --color-breu: #17183f;
+  --color-girassol: #ffc83d;
+  --color-girassol-funda: #d99a00;
+  --color-menta: #22c3a6;
+  --color-menta-funda: #11957e;
+  --color-tomate: #ff6a55;
+  --color-tomate-funda: #d64633;
+  --color-lavanda: #a99bff;
+
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Atkinson Hyperlegible', ui-sans-serif, system-ui, sans-serif;
+
+  --animate-encaixe: encaixe 260ms cubic-bezier(0.2, 0.9, 0.3, 1.3);
+  --animate-tremor: tremor 380ms ease-in-out;
+  --animate-pulso: pulso 420ms ease-out;
+  --animate-surgir: surgir 480ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-crescer: crescer 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-estrela: estrela 520ms cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+}
+
+@keyframes encaixe {
+  from {
+    transform: translateY(-10px) scaleX(0.7);
+    opacity: 0.2;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes tremor {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-7px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes pulso {
+  from {
+    transform: scale(1.25);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes surgir {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes crescer {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes estrela {
+  from {
+    transform: scale(0) rotate(-40deg);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-papel);
+    color: var(--color-tinta);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-girassol);
+    outline-offset: 2px;
+  }
+
+  dialog::backdrop {
+    background: rgb(5 6 25 / 0.75);
+  }
+}
+
+@layer components {
+  /* Sobra de tempo que nenhuma atividade ocupa. */
+  .sobra-hachurada {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgb(255 106 85 / 0.45) 0 5px,
+      transparent 5px 11px
+    );
+  }
+
+  /* Peça física: atividade com borda inferior mais escura. */
+  .peca {
+    border-bottom-width: 5px;
+    transition:
+      transform 120ms ease,
+      border-bottom-width 120ms ease;
+  }
+  .peca:active {
+    transform: translateY(3px);
+    border-bottom-width: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
