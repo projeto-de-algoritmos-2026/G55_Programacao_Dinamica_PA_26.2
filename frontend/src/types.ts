@@ -1,5 +1,6 @@
 // Tipos espelhando os schemas Pydantic de backend/app/modelos.py.
 // As regras de validação (faixas e limites) ficam em backend/app/limites.py.
+// Mantenha os dois arquivos sincronizados ao mudar um contrato.
 
 // --- Entrada ---------------------------------------------------------------
 
@@ -54,7 +55,7 @@ export interface RespostaResolver {
   pd: ResultadoSelecao
   guloso: ResultadoGuloso
   comparacao: Comparacao
-  tabela_disponivel: boolean
+  tabela_disponivel: boolean // n <= 8 e T <= 30
 }
 
 export interface PassoReconstrucao {
@@ -88,3 +89,6 @@ export interface ErroValidacao {
 export interface RespostaErro {
   detail: string | ErroValidacao[]
 }
+
+/** Alias mantido por compatibilidade. */
+export type ErroApi = RespostaErro
